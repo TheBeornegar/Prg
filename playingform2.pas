@@ -267,6 +267,8 @@ implementation
 
 {$R *.lfm}
 
+{Funkce, která zkontroluje jeden směr od daného políčka a pokud nalezne 5 stejných hodnot (krom nuly), tak do sebe dosadí danou hodnotu}
+
 function TForm2.DidSomeoneWin(row : byte; column : byte; rowdirection: integer; columndirection: integer;arr: TwoDimArr;player: integer): shortint;
 begin
   if ((row + rowdirection) < N ) AND ((column + columndirection) < N)
@@ -290,6 +292,8 @@ begin
       end;
 end;
 
+{Procedura, která pomocí procedury DidSomeoneWin zkontroluje celé pole, zda-li v něm není vítězná posloupnost}
+
 procedure Tform2.ShowWinner(arr: TwoDimArr;player : integer)  ;
 var i,j : integer;
   begin
@@ -297,7 +301,7 @@ var i,j : integer;
       begin
         for j := 1 to N do
          begin
-           if (DidSomeoneWin(i,j,1,0,arr,player) = player) OR (DidSomeoneWIn(i,j,0,1,arr,player) = player) OR (DidSomeoneWIn(i,j,1,1,arr,player) = player)
+           if (DidSomeoneWin(i,j,1,0,arr,player) = player) OR (DidSomeoneWin(i,j,0,1,arr,player) = player) OR (DidSomeoneWIn(i,j,1,1,arr,player) = player)
            OR (DidSomeoneWIn(i,j,-1,1,arr,player) = player) then
              begin
                if player = 1 then
@@ -316,6 +320,8 @@ var i,j : integer;
          end;
       end;
   end;
+
+{procedura, která změní caption buttonu na X, pokud bylo příslušná hodnota v poli 1 = hodnota pro AI}
 
 procedure TForm2.ClickOnIt(row: byte; column : byte);
 begin
@@ -818,6 +824,8 @@ begin
 
 end;
 
+{Funkce, která pro dané políčko najde a ohodnotí posloupnost sousedních znaků v jednom směru}
+
 Function TForm2.FindSequence (row : byte; column : byte; rowdirection: integer; columndirection: integer;arr: TwoDimArr; player: integer): integer;     //player=1 PC
   begin
    if ((row + rowdirection) > N )or ((column + columndirection) > N)
@@ -915,6 +923,7 @@ Function TForm2.FindSequence (row : byte; column : byte; rowdirection: integer; 
         FindSequence := 0
   end;
 
+{Funkce, která, pokud najde "SpacedSequence", tak přepíše hodnoty, aby lépe reprezentovaly herní stav}
 Procedure TForm2.FindSpacedSequence (var FirstSequence : integer;var SecondSequence : integer);
    begin
    if ((FirstSequence = 127) AND (SecondSequence = 1)) OR ((FirstSequence = 1) AND (SecondSequence = 127))           //XXX?X
@@ -949,8 +958,9 @@ Procedure TForm2.FindSpacedSequence (var FirstSequence : integer;var SecondSeque
 
   end;
 
+{Funkce, která pro dané políčko vypočítá celkové skóre.}
 
-Function TForm2.EvaluatePosition (row: byte; column: byte;arr : TwoDimArr; player: integer): integer;    //
+Function TForm2.EvaluatePosition (row: byte; column: byte;arr : TwoDimArr; player: integer): integer;
    var LeftToRight,RightToLeft,Upwards,Downwards,RightUpwards,LeftDownwards,LeftUpwards,RightDownwards : integer;
   begin
     LeftToRight := FindSequence (row,column,0,1,arr,player);      //doprava
@@ -970,6 +980,8 @@ Function TForm2.EvaluatePosition (row: byte; column: byte;arr : TwoDimArr; playe
     EvaluatePosition := LeftToRight + RightToLeft + Upwards + Downwards + RightUpwards + LeftDownwards + LeftUpwards + RightDownwards;
   end;
 
+{Funkce, která zjistí, zda-li hráč vyhrál pomocí procedury ShowWinner, potom vybere nejvhodnější tah - políčko s největším Skóre, do daného políčka (reprezentovaném v 2D poli) dosadí hodnotu pro PC, zavolá funkci ClickOnIt,
+pro změnu Caption daného Buttonu a pomocí procedury ShowWinner zjistí, zda-li se někde nachází sekvence 5 stejných hodnot}
 Procedure TForm2.MakeATurn(var arr: TwoDimArr; player:integer);
 var i,j,row,column : byte;
     Score : integer;
@@ -996,7 +1008,8 @@ var i,j,row,column : byte;
     ShowWinner(arr,1);
   end;
 
-{ TForm2 }
+
+{procedura, která při zmáčknutí některého buttonu změní příslušnou hodnotu v poli na -1, změní caption daného buttonu na 'O' a zavolá funkci MakeATurn}
 
 procedure TForm2.Button1_1Click(Sender: TObject);
 begin
